@@ -1,25 +1,29 @@
 # This file is executed on every boot (including wake-boot from deepsleep)
-#import esp
-#esp.osdebug(None)
-import uos, machine
-import network
-import time
-#uos.dupterm(None, 1) # disable REPL on UART(0)
+# import esp
+# esp.osdebug(None)
+# uos.dupterm(None, 1) # disable REPL on UART(0)
 import gc
-#import webrepl
-#webrepl.start()
+import time, network
+# import webrepl
+# webrepl.start()
 gc.collect()
 
-''' 
-Код подключения к WiFi 
-'''
-wlan_id = "**********"
-wlan_pass = "**********"
+CONFIG = {
+    # WIFI Configuration
+    "SSID": 'V',
+    "WIFI_PASSWORD": '9067505115',
+}
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
-if wlan.isconnected() == False:
-    wlan.connect(wlan_id, wlan_pass)
-    while wlan.isconnected() == False:
+if not wlan.isconnected():
+    print(CONFIG.get('SSID'))
+    print(CONFIG.get('WIFI_PASSWORD'))
+    print('connecting to network...')
+    wlan.connect(CONFIG.get('SSID'), CONFIG.get('WIFI_PASSWORD'))
+    while not wlan.isconnected():
         time.sleep(1)
-print('Device IP:', wlan.ifconfig()[0])
+
+print('\nDevice IP: \nhttp://' + str(wlan.ifconfig()[0]))
+print(CONFIG.get('CLIENT_ID'))
+
